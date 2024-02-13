@@ -7,7 +7,7 @@ def null():
 
 endpoint = "http://localhost:8000/api/"
 
-get_response = requests.get(endpoint)  # HTTP GET request
+get_response = requests.post(endpoint, json={"product_id", 123})  # HTTP GET request
 # print(get_response.text)
 
 # endpoint = "https://httpbin.org/"
