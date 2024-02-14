@@ -18,6 +18,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         # We add the method to the fields list
         fields = [
+            # "user",
             "url",
             "edit_url",
             "id",
