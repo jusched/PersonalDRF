@@ -41,7 +41,8 @@ def make_delete_request(endpoint):
 method = get_user_input()
 
 if method == 1:
-    endpoint = "http://localhost:8000/api/products/1/"
+    product_id = input("Enter the product ID to get: ")
+    endpoint = f"http://localhost:8000/api/products/{product_id}/"
     make_get_request(endpoint)
 
 elif method == 2:
