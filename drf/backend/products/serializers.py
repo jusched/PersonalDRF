@@ -1,24 +1,39 @@
-from cgitb import lookup
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
+from api.serializers import UserPublicSerializer
 from .models import Product
+from . import validators
+
+
+class ProductInlineSerializer(serializers.Serializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name="product-detail", lookup_field="pk", read_only=True
+    )
+    title = serializers.CharField(read_only=True)
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    owner = UserPublicSerializer(source="user", read_only=True)
     # This way, we can change the name of the get_discount method to my_discount
     my_discount = serializers.SerializerMethodField(read_only=True)
+    related_products = ProductInlineSerializer(
+        source="user.products_set.all", read_only=True, many=True
+    )
     edit_url = serializers.SerializerMethodField(read_only=True)
     # Only works on a ModelSerializer
     url = serializers.HyperlinkedIdentityField(
         view_name="product-detail", lookup_field="pk"
     )
+    title = serializers.CharField(validators=[validators.validate_title])
+    # email = serializers.EmailField(source="user.email", read_only=True)
 
     class Meta:
         model = Product
         # We add the method to the fields list
         fields = [
-            # "user",
+            "owner",
+            # "email",
             "url",
             "edit_url",
             "id",
@@ -27,6 +42,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "price",
             "sale_price",
             "my_discount",
+            "related_products",
         ]
 
     # Then declare the method to be used from the Product model
