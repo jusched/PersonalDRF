@@ -1,25 +1,25 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework import generics, mixins, permissions, authentication
+from rest_framework import generics, mixins, permissions
 
 from django.shortcuts import get_object_or_404
 
-from api.authentication import TokenAuthentication
+from api.mixins import StaffEditorPermissionMixin
 from .models import Product
-from .permissions import IsStaffEditorPermission
 from .serializers import ProductSerializer
 
 
-class ProductListCreateAPIView(generics.ListAPIView):
+# Permission classes no longer needed to be declared inside APIViews
+# StaffEditorPermissionMixin is a custom mixin that contains the permissions
+class ProductListCreateAPIView(StaffEditorPermissionMixin, generics.ListAPIView):
     # IsAuthenticatedOrReadOnly allows unauthenticated users to read
     # Also, order matters. First verify if the user is admin then if he can edit
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission] *
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
-class ProductCreateAPIView(generics.CreateAPIView):
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
+class ProductCreateAPIView(StaffEditorPermissionMixin, generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -31,16 +31,14 @@ class ProductCreateAPIView(generics.CreateAPIView):
         serializer.save(content=content)
 
 
-class ProductDetailAPIView(generics.RetrieveAPIView):
+class ProductDetailAPIView(StaffEditorPermissionMixin, generics.RetrieveAPIView):
     # Automatically uses the ID of the model to retrieve the object
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
-class ProductUpdateAPIView(generics.UpdateAPIView):
+class ProductUpdateAPIView(StaffEditorPermissionMixin, generics.UpdateAPIView):
     # Automatically uses the ID of the model to retrieve the object
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -53,12 +51,10 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
             instance.save()
 
 
-class ProductDeleteAPIView(generics.DestroyAPIView):
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
+class ProductDeleteAPIView(StaffEditorPermissionMixin, generics.DestroyAPIView):
     # Automatically uses the ID of the model to retrieve the object
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated]
     lookup_field = "pk"
 
     def perform_destroy(self, instance):

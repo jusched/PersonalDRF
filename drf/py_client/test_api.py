@@ -1,6 +1,11 @@
 import requests
 import random
 
+from getpass import getpass
+
+auth_endpoint = "http://localhost:8000/api/auth/"
+password = getpass("Enter the password: ")
+
 
 def get_user_input():
     while True:
