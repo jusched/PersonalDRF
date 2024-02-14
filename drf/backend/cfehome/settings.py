@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "api",
     "products",
     "rest_framework",
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,18 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# This helps DRY. They get called before the view is called
+# So authentication and permissions are now automated for all views
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        # First, verify session then Token
+        "rest_framework.authentication.SessionAuthentication",
+        # * I can add "rest_framework" instead of "api" to switch to native Django REST
+        "api.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        # Only GET requests are allowed for unauthenticated users
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ],
+}
