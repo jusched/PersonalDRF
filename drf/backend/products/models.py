@@ -40,6 +40,14 @@ class Product(models.Model):
 
     objects = ProductManager()
 
+    @property
+    def body(self):
+        return self.description
+
+    @property
+    def path(self):
+        return f"products/{self.pk}"
+
     # This method is called from the algolia index to check if the product is public
     def is_public(self) -> bool:
         return self.public
