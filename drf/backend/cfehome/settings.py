@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "algoliasearch_django",
+    "rest_framework_simplejwt",
     # Internal
     "api",
     "products",
@@ -141,6 +143,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         # * I can add "rest_framework" instead of "api" to switch to native Django REST
         "api.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         # Only GET requests are allowed for unauthenticated users
@@ -155,4 +158,10 @@ ALGOLIA = {
     "APPLICATION_ID": "FCW1MSY55M",
     "API_KEY": "0f080169f3bc87edfd2d62821d8bb06c",
     "INDEX_PREFIX": "cfe",
+}
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ["Bearer"],
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
