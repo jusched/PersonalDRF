@@ -17,9 +17,9 @@ class ProductSerializer(serializers.ModelSerializer):
     owner = UserPublicSerializer(source="user", read_only=True)
     # This way, we can change the name of the get_discount method to my_discount
     my_discount = serializers.SerializerMethodField(read_only=True)
-    related_products = ProductInlineSerializer(
-        source="user.products_set.all", read_only=True, many=True
-    )
+    # related_products = ProductInlineSerializer(
+    #     source="user.products_set.all", read_only=True, many=True
+    # )
     edit_url = serializers.SerializerMethodField(read_only=True)
     # Only works on a ModelSerializer
     url = serializers.HyperlinkedIdentityField(
@@ -42,7 +42,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "price",
             "sale_price",
             "my_discount",
-            "related_products",
+            # "related_products",
+            "public",
         ]
 
     # Then declare the method to be used from the Product model
